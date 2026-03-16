@@ -578,7 +578,7 @@
   <button id="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightbox-img" src="" alt="">
 </div>
-
+<button onclick="playMusic()">🎵 Play Romantic Music</button>
 <audio id="bg-audio" autoplay loop>
   <source src="Sultan_2016_-_Jag_Ghoomeya_Male_(mp3.pm).mp3" type="audio/mpeg">
 </audio>
@@ -698,7 +698,9 @@ function openLetter() {
   const l = document.getElementById('letter');
   l.style.display = l.style.display === 'block' ? 'none' : 'block';
 }
-
+function playMusic(){
+document.getElementById("bgMusic").play();
+}
 // ── Lightbox ──
 function openLightbox(item) {
   const src = item.querySelector('img').src;
