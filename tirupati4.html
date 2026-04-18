@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Love's Tirupati Journey 🙏❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #0a0a1a;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* ===== LOCK SCREEN ===== */
+  #lockScreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: radial-gradient(ellipse at center, #1a0030 0%, #0a0010 70%);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    gap: 18px;
+  }
+  #lockScreen .lock-icon {
+    font-size: 54px; animation: pulse 2s ease-in-out infinite;
+  }
+  #lockScreen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; color: #f7c6e0;
+    letter-spacing: 1px;
+  }
+  #lockScreen p {
+    font-size: 0.85rem; color: #a888c8; margin-top: -8px;
+  }
+  .lock-input-wrap {
+    position: relative; width: 260px;
+  }
+  .lock-input-wrap input {
+    width: 100%;
+    padding: 13px 18px;
+    border-radius: 50px;
+    border: 1.5px solid #7b3fa0;
+    background: rgba(255,255,255,0.07);
+    color: #fff; font-size: 1rem;
+    outline: none; text-align: center;
+    letter-spacing: 4px;
+    transition: border-color 0.3s;
+  }
+  .lock-input-wrap input:focus { border-color: #e879f9; }
+  #unlockBtn {
+    padding: 13px 40px;
+    border: none; border-radius: 50px;
+    background: linear-gradient(135deg, #c026d3, #7c3aed);
+    color: #fff; font-size: 1rem; font-family: 'Poppins', sans-serif;
+    cursor: pointer; letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 24px rgba(192,38,211,0.5);
+  }
+  #unlockBtn:hover { transform: scale(1.05); box-shadow: 0 0 36px rgba(192,38,211,0.8); }
+  #wrongMsg {
+    color: #f87171; font-size: 0.85rem;
+    display: none; animation: shake 0.4s;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
+  }
+
+  /* Stars on lock screen */
+  .stars { position: fixed; inset: 0; pointer-events: none; }
+  .star {
+    position: absolute; width: 2px; height: 2px;
+    background: #fff; border-radius: 50%;
+    animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%,100%{opacity:0.2} 50%{opacity:1}
+  }
+  @keyframes pulse {
+    0%,100%{transform:scale(1)} 50%{transform:scale(1.1)}
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  #mainContent { display: none; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1e0040 0%, #0f172a 50%, #1a0920 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 40px 20px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1621436488619-570998c9db67?w=1200&q=80') center/cover;
+    opacity: 0.08;
+  }
+  .hero-badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 6px 20px; border-radius: 50px;
+    font-size: 0.78rem; letter-spacing: 2px;
+    color: #f0c4f8; margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    line-height: 1.2; color: #fff;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: #e879f9; }
+  .hero p {
+    font-size: 1.05rem; color: #c4b5d4;
+    max-width: 520px; line-height: 1.8;
+    margin-bottom: 32px;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 30px;
+    font-size: 0.8rem; color: #a888c8;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+  /* Nav dots */
+  .nav-dots {
+    position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 100;
+  }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.3); cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .nav-dot.active { background: #e879f9; transform: scale(1.4); }
+
+  /* Sections common */
+  section {
+    padding: 80px 20px;
+    max-width: 900px; margin: 0 auto;
+  }
+  .section-label {
+    font-size: 0.75rem; letter-spacing: 3px; color: #e879f9;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: #fff; margin-bottom: 30px;
+    line-height: 1.3;
+  }
+  .divider {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, #e879f9, #7c3aed);
+    border-radius: 2px; margin: 0 auto 40px;
+  }
+
+  /* ===== TEMPLE SECTION ===== */
+  #templeSection {
+    background: linear-gradient(180deg, #0a0a1a 0%, #10021a 100%);
+    padding: 80px 0;
+  }
+  #templeSection > * { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+  .temple-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 32px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 32px; align-items: center;
+    margin-bottom: 32px;
+  }
+  @media(max-width: 600px) { .temple-card { grid-template-columns: 1fr; } }
+  .temple-card img {
+    width: 100%; border-radius: 14px;
+    object-fit: cover; height: 220px;
+  }
+  .temple-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: #f0c4f8; margin-bottom: 10px;
+  }
+  .temple-card p { color: #c4b5d4; line-height: 1.7; font-size: 0.9rem; }
+  .tip-badge {
+    display: inline-block; margin-top: 12px;
+    background: rgba(232,121,249,0.12);
+    border: 1px solid rgba(232,121,249,0.3);
+    color: #e879f9; padding: 5px 14px;
+    border-radius: 50px; font-size: 0.78rem;
+  }
+
+  /* ===== GALLERY ===== */
+  #gallerySection { background: #0a0a1a; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px; margin-top: 10px;
+  }
+  .gallery-item {
+    border-radius: 14px; overflow: hidden;
+    aspect-ratio: 1; cursor: pointer;
+    position: relative;
+    transition: transform 0.3s;
+  }
+  .gallery-item:hover { transform: scale(1.04); }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+  .gallery-item .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    opacity: 0; transition: opacity 0.3s;
+    display: flex; align-items: flex-end; padding: 12px;
+    font-size: 0.8rem; color: #fff;
+  }
+  .gallery-item:hover .overlay { opacity: 1; }
+
+  /* Lightbox */
+  #lightbox {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.92);
+    justify-content: center; align-items: center;
+  }
+  #lightbox.open { display: flex; }
+  #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; }
+  #lightbox .close-lb {
+    position: absolute; top: 20px; right: 24px;
+    font-size: 2rem; cursor: pointer; color: #fff; line-height: 1;
+  }
+
+  /* ===== COUNTDOWN ===== */
+  #countdownSection {
+    background: linear-gradient(160deg, #10021a 0%, #0f172a 100%);
+    text-align: center;
+  }
+  .countdown-wrap {
+    display: flex; gap: 16px;
+    justify-content: center; flex-wrap: wrap;
+    margin: 32px 0;
+  }
+  .count-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(232,121,249,0.2);
+    border-radius: 16px; padding: 20px 28px;
+    min-width: 90px;
+  }
+  .count-box .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem; color: #e879f9;
+    display: block;
+  }
+  .count-box .label {
+    font-size: 0.72rem; letter-spacing: 2px;
+    color: #a888c8; text-transform: uppercase;
+  }
+
+  /* ===== MESSAGES ===== */
+  #messagesSection { background: #0a0a1a; }
+  .chat-wrap {
+    max-width: 480px; margin: 0 auto;
+  }
+  .msg-bubble {
+    padding: 14px 18px; border-radius: 18px;
+    margin-bottom: 12px; max-width: 85%;
+    font-size: 0.92rem; line-height: 1.6;
+    animation: fadeUp 0.5s ease both;
+  }
+  .msg-bubble.left {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e2d8f0; border-radius: 18px 18px 18px 4px;
+  }
+  .msg-bubble.right {
+    background: linear-gradient(135deg, #7c3aed, #c026d3);
+    color: #fff; margin-left: auto;
+    border-radius: 18px 18px 4px 18px;
+  }
+  .msg-time {
+    font-size: 0.7rem; color: #7f6a9a; margin-bottom: 4px;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== BLESSINGS ===== */
+  #blessingsSection {
+    background: linear-gradient(160deg, #0f172a 0%, #10021a 100%);
+    text-align: center;
+  }
+  .blessings-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px; margin: 32px 0;
+  }
+  .blessing-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 24px 16px;
+    text-align: center; transition: transform 0.3s, border-color 0.3s;
+    cursor: default;
+  }
+  .blessing-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(232,121,249,0.4);
+  }
+  .blessing-card .icon { font-size: 2rem; margin-bottom: 10px; }
+  .blessing-card h4 {
+    font-size: 0.9rem; color: #f0c4f8; margin-bottom: 6px;
+  }
+  .blessing-card p { font-size: 0.78rem; color: #a888c8; line-height: 1.5; }
+
+  /* ===== SURPRISE ===== */
+  #surpriseSection { text-align: center; }
+  .surprise-btn {
+    padding: 16px 48px;
+    background: linear-gradient(135deg, #c026d3, #7c3aed);
+    border: none; border-radius: 50px;
+    color: #fff; font-size: 1.1rem; font-family: 'Poppins', sans-serif;
+    cursor: pointer; letter-spacing: 0.5px;
+    box-shadow: 0 0 30px rgba(192,38,211,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .surprise-btn:hover { transform: scale(1.06); box-shadow: 0 0 50px rgba(192,38,211,0.6); }
+  .surprise-reveal {
+    display: none; margin-top: 40px;
+    animation: fadeUp 0.8s ease;
+  }
+  .surprise-reveal.show { display: block; }
+  .love-letter {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(232,121,249,0.2);
+    border-radius: 20px; padding: 40px 32px;
+    max-width: 560px; margin: 0 auto;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.9; color: #e2d8f0; font-size: 1.05rem;
+  }
+  .love-letter .sign {
+    margin-top: 24px; color: #e879f9;
+    font-size: 1.1rem;
+  }
+
+  /* ===== FLOATING HEARTS ===== */
+  .heart-float {
+    position: fixed; pointer-events: none;
+    font-size: 18px; z-index: 9998;
+    animation: floatUp var(--dur, 6s) linear infinite var(--delay, 0s);
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center; padding: 40px 20px;
+    background: #050510; color: #5a4a6a; font-size: 0.85rem;
+  }
+  footer span { color: #e879f9; }
+
+  /* ===== MUSIC PLAYER ===== */
+  #musicPlayer {
+    position: fixed; bottom: 24px; left: 24px; z-index: 500;
+    background: rgba(20, 5, 40, 0.85);
+    border: 1px solid rgba(232,121,249,0.3);
+    border-radius: 60px; padding: 10px 18px 10px 12px;
+    display: flex; align-items: center; gap: 12px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(192,38,211,0.25);
+    transition: all 0.3s;
+    min-width: 220px;
+  }
+  #musicPlayer:hover { box-shadow: 0 4px 40px rgba(192,38,211,0.45); }
+  .music-art {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+    background: linear-gradient(135deg, #7c3aed, #c026d3);
+    animation: spin 8s linear infinite paused;
+  }
+  .music-art.playing { animation-play-state: running; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .music-info { flex: 1; min-width: 0; }
+  .music-title {
+    font-size: 0.72rem; font-weight: 600; color: #f0c4f8;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .music-sub { font-size: 0.65rem; color: #a888c8; }
+  .music-controls { display: flex; align-items: center; gap: 6px; }
+  .music-btn {
+    background: none; border: none; cursor: pointer;
+    color: #e879f9; font-size: 18px; padding: 4px;
+    transition: transform 0.2s, color 0.2s; line-height: 1;
+  }
+  .music-btn:hover { transform: scale(1.2); color: #fff; }
+  .music-toggle-btn {
+    background: linear-gradient(135deg, #7c3aed, #c026d3);
+    border: none; border-radius: 50%; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; flex-shrink: 0;
+    transition: transform 0.2s; box-shadow: 0 0 12px rgba(192,38,211,0.4);
+  }
+  .music-toggle-btn:hover { transform: scale(1.1); }
+  .music-mode-pill {
+    position: absolute; top: -8px; right: 10px;
+    background: #c026d3; border-radius: 20px;
+    padding: 1px 8px; font-size: 0.6rem; color: #fff;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .music-mode-switcher {
+    display: flex; gap: 4px; margin-top: 4px;
+  }
+  .mode-pill {
+    font-size: 0.6rem; padding: 2px 8px; border-radius: 20px;
+    cursor: pointer; border: 1px solid rgba(232,121,249,0.3);
+    color: #a888c8; transition: all 0.2s; background: none;
+    font-family: 'Poppins', sans-serif;
+  }
+  .mode-pill.active { background: rgba(232,121,249,0.2); color: #e879f9; border-color: #e879f9; }
+  .music-bar {
+    display: flex; gap: 2px; align-items: flex-end; height: 16px;
+  }
+  .music-bar span {
+    display: block; width: 3px; background: #e879f9; border-radius: 2px;
+    animation: bar var(--h, 0.5s) ease-in-out infinite alternate paused;
+  }
+  .music-bar.playing span { animation-play-state: running; }
+  @keyframes bar { from { height: 3px; } to { height: var(--max, 14px); } }
+
+  /* Scroll animations */
+  .fade-in {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Lock Screen -->
+<div id="lockScreen">
+  <div class="lock-icon">🔐</div>
+  <h2>A Special Place for You</h2>
+  <p>Enter your secret to unlock ✨</p>
+  <div class="lock-input-wrap">
+    <input type="password" id="pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')unlock()">
+  </div>
+  <button id="unlockBtn" onclick="unlock()">🔓 Unlock with Love</button>
+  <div id="wrongMsg">❌ Wrong password, love! Try again 😜</div>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent">
+
+  <!-- MUSIC PLAYER -->
+  <div id="musicPlayer" style="display:none; position:fixed;">
+    <div class="music-mode-pill" id="modePill">Devotional</div>
+    <div class="music-art" id="musicArt">🪔</div>
+    <div class="music-info">
+      <div class="music-title" id="musicTitle">Govinda Hari Govinda</div>
+      <div class="music-mode-switcher">
+        <button class="mode-pill active" id="btnDevotional" onclick="switchMode('devotional')">🙏 Devotional</button>
+        <button class="mode-pill" id="btnRomantic" onclick="switchMode('romantic')">❤️ Romantic</button>
+      </div>
+    </div>
+    <div class="music-bar" id="musicBar">
+      <span style="--h:0.4s;--max:6px"></span>
+      <span style="--h:0.6s;--max:12px"></span>
+      <span style="--h:0.3s;--max:9px"></span>
+      <span style="--h:0.5s;--max:14px"></span>
+      <span style="--h:0.7s;--max:8px"></span>
+    </div>
+    <button class="music-toggle-btn" id="playPauseBtn" onclick="togglePlay()">▶</button>
+  </div>
+
+  <!--
+  ================================================================
+  🎵 ADD YOUR MUSIC FILES HERE
+  ----------------------------------------------------------------
+  1. Put your music files in the SAME FOLDER as this HTML file.
+  2. Replace the filenames below with your actual file names.
+
+     DEVOTIONAL song → change  devotional-song.mp3
+     ROMANTIC song   → change  romantic-song.mp3
+
+  Supported formats: .mp3  .ogg  .wav  .m4a
+  Example:  src="govinda_bhajan.mp3"
+            src="tum_hi_ho.mp3"
+  ================================================================
+  -->
+  <audio id="audioDevotional" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audioRomantic" loop preload="auto">
+    <source src="music1.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Nav Dots -->
+  <nav class="nav-dots" id="navDots">
+    <div class="nav-dot active" onclick="scrollToSection(0)" title="Home"></div>
+    <div class="nav-dot" onclick="scrollToSection(1)" title="Temple Guide"></div>
+    <div class="nav-dot" onclick="scrollToSection(2)" title="Gallery"></div>
+    <div class="nav-dot" onclick="scrollToSection(3)" title="Countdown"></div>
+    <div class="nav-dot" onclick="scrollToSection(4)" title="Messages"></div>
+    <div class="nav-dot" onclick="scrollToSection(5)" title="Blessings"></div>
+    <div class="nav-dot" onclick="scrollToSection(6)" title="Surprise"></div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero" data-section="0">
+    <div class="hero-badge">✨ A journey made special by you ✨</div>
+    <h1>Welcome to<br><span>Tirupati, My Love</span> 🙏</h1>
+    <p>
+      As you take your first steps into this sacred city, know that my heart
+      walks beside you every moment. May Lord Balaji shower His choicest
+      blessings upon you, and may this journey fill your soul with peace & joy.
+    </p>
+    <div style="font-size: 2rem; letter-spacing: 8px;">❤️ 🪔 🌸 🙏 🌸 🪔 ❤️</div>
+    <div class="scroll-hint">↓ Scroll to explore</div>
+  </div>
+
+  <!-- TEMPLE GUIDE -->
+  <div id="templeSection" data-section="1">
+    <section>
+      <p class="section-label fade-in">🏛 Your Guide</p>
+      <h2 class="section-title fade-in">Sacred Places to Visit</h2>
+      <div class="divider fade-in"></div>
+
+      <div class="temple-card fade-in">
+        <img src="p1.png" alt="Tirumala Temple">
+        <div>
+          <h3>🏯 Sri Venkateswara Temple</h3>
+          <p>The crown jewel of Tirupati — one of the most visited religious sites in the world. The main deity, Lord Venkateswara (Balaji), is believed to be an incarnation of Lord Vishnu.</p>
+          <span class="tip-badge">💡 Book darshan tickets online in advance</span>
+        </div>
+      </div>
+
+      <div class="temple-card fade-in">
+        <img src="p2.png" alt="Akasaganga" >
+        <div>
+          <h3>💧 Akasaganga Teertham</h3>
+          <p>A sacred waterfall on the way to Tirumala. Pilgrims take a holy dip here before their temple visit. The cool waters flowing from the hills are believed to have divine power.</p>
+          <span class="tip-badge">💡 Best visited early morning</span>
+        </div>
+      </div>
+
+      <div class="temple-card fade-in">
+        <img src="p3.png" alt="Padmavathi Temple" >
+        <div>
+          <h3>🌸 Padmavathi Temple, Tiruchanur</h3>
+          <p>Goddess Padmavathi is the consort of Lord Venkateswara. Visiting her temple is considered an essential part of the Tirupati pilgrimage — seek her blessings first!</p>
+          <span class="tip-badge">💡 Usually less crowded than Tirumala</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GALLERY -->
+  <section id="gallerySection" data-section="2">
+    <p class="section-label fade-in">📸 Memories</p>
+    <h2 class="section-title fade-in">Beautiful Tirupati</h2>
+    <div class="divider fade-in"></div>
+    <div class="gallery-grid fade-in" id="gallery"></div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section id="countdownSection" data-section="3">
+    <p class="section-label fade-in">⏳ Missing You</p>
+    <h2 class="section-title fade-in">Few Days to Go</h2>
+    <div class="divider fade-in"></div>
+    <div class="countdown-wrap fade-in">
+      <div class="count-box">
+        <span class="num" id="cd-days">--</span>
+        <span class="label">Days</span>
+      </div>
+      <div class="count-box">
+        <span class="num" id="cd-hours">--</span>
+        <span class="label">Hours</span>
+      </div>
+      <div class="count-box">
+        <span class="num" id="cd-mins">--</span>
+        <span class="label">Minutes</span>
+      </div>
+      <div class="count-box">
+        <span class="num" id="cd-secs">--</span>
+        <span class="label">Seconds</span>
+      </div>
+    </div>
+    <p class="fade-in" style="color:#a888c8; font-size:0.95rem;">Days left until you go on may 15, 2026 🏠❤️</p>
+  </section>
+
+  <!-- MESSAGES -->
+  <section id="messagesSection" data-section="4">
+    <p class="section-label fade-in">💬 From My Heart</p>
+    <h2 class="section-title fade-in" style="text-align:center;">Little Notes for You</h2>
+    <div class="divider fade-in"></div>
+    <div class="chat-wrap fade-in">
+      <p class="msg-time" style="text-align:center; margin-bottom:20px;">Before you left... 🌙</p>
+
+      <div class="msg-bubble right">Have you reached Tirupati safely? 🥺</div>
+      <div class="msg-bubble left">Remember to drink water and eat properly 🍱</div>
+      <div class="msg-bubble right">Pray for us too when you're at the temple 🙏🤍</div>
+      <div class="msg-bubble left">The mornings there are magical — enjoy every moment ☀️</div>
+      <div class="msg-bubble right">I miss you already, but I'm so happy you're there ❤️</div>
+      <div class="msg-bubble left">Take lots of photos so you can show me everything! 📸</div>
+      <div class="msg-bubble right">Come back soon... with lots of memories 🏠💔</div>
+    </div>
+  </section>
+
+  <!-- BLESSINGS -->
+  <div id="blessingsSection" data-section="5">
+    <section>
+      <p class="section-label fade-in">🙏 Wishing You</p>
+      <h2 class="section-title fade-in" style="text-align:center;">My Blessings for You</h2>
+      <div class="divider fade-in"></div>
+      <div class="blessings-grid fade-in">
+        <div class="blessing-card">
+          <div class="icon">💖</div>
+          <h4>Love & Joy</h4>
+          <p>May your heart overflow with happiness and inner peace on this holy journey</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">🌟</div>
+          <h4>Good Health</h4>
+          <p>May Lord Balaji bless you with strong health, energy and well-being always</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">🛡️</div>
+          <h4>Safe Journey</h4>
+          <p>May every step you take be protected and guided by divine grace</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">🌸</div>
+          <h4>Peace of Mind</h4>
+          <p>May the divine vibrations of Tirumala fill you with calm and serenity</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">🤍</div>
+          <h4>Our Bond</h4>
+          <p>May our love grow stronger and more beautiful with every passing day</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">✨</div>
+          <h4>Dreams Come True</h4>
+          <p>May all your prayers at the sacred temple be answered by Him</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">🌙</div>
+          <h4>Sweet Memories</h4>
+          <p>May every moment of this journey become a cherished memory you hold forever</p>
+        </div>
+        <div class="blessing-card">
+          <div class="icon">🏡</div>
+          <h4>Safe Return</h4>
+          <p>May you return home safely, glowing with the divine blessings of Tirumala</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SURPRISE -->
+  <section id="surpriseSection" data-section="6">
+    <p class="section-label fade-in">💌 A Secret</p>
+    <h2 class="section-title fade-in">I Have Something for You</h2>
+    <div class="divider fade-in"></div>
+    <button class="surprise-btn fade-in" onclick="revealSurprise()">Open My Letter 💌</button>
+
+    <div class="surprise-reveal" id="surpriseReveal">
+      <div class="love-letter">
+        <p>My dearest love,</p><br>
+        <p>
+          As you stand before Lord Venkateswara, I want you to know that
+          my prayers are with you — not just today, but every single day.
+        </p><br>
+        <p>
+          Tirupati is a place of miracles, and you — you are already my miracle.
+          You make ordinary days feel like a pilgrimage to something beautiful.
+        </p><br>
+        <p>
+          Close your eyes at the temple, whisper your wishes to the Lord,
+          and know that I will be here — counting every second until
+          you walk back through the door.
+        </p><br>
+        <p>
+          Come home soon. The stars don't shine as bright when you're not here. 🌙
+        </p>
+        <p class="sign">— Forever yours, with all my love ❤️</p>
+      </div>
+
+      <div style="margin-top: 40px; font-size: 2.5rem; letter-spacing: 12px; animation: pulse 2s infinite;">
+        ❤️ 🙏 ❤️
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Made with <span>❤️</span> especially for you, on your first visit to Tirupati 🙏<br>
+    <span style="color:#5a4a6a; font-size:0.75rem; margin-top:8px; display:block;">May Lord Balaji bless you always ✨</span>
+  </footer>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span class="close-lb" onclick="closeLightbox()">×</span>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<script>
+/* Stars */
+const starsEl = document.getElementById('stars');
+for(let i = 0; i < 120; i++){
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*5}s;opacity:${0.2+Math.random()*0.8};width:${1+Math.random()*2}px;height:${1+Math.random()*2}px`;
+  starsEl.appendChild(s);
+}
+
+/* Floating hearts */
+const heartEmojis = ['❤️','💖','💕','💗','🌸','✨'];
+function spawnHeart(){
+  const h = document.createElement('div');
+  h.className = 'heart-float';
+  h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+  h.style.cssText = `left:${Math.random()*100}vw;--dur:${5+Math.random()*5}s;--delay:${Math.random()*3}s`;
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(), 10000);
+}
+setInterval(spawnHeart, 700);
+
+/* Unlock */
+function unlock(){
+  const v = document.getElementById('pass').value;
+  const msg = document.getElementById('wrongMsg');
+  if(v === 'priyanka'){
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    initGallery();
+    startCountdown();
+    initScrollObserver();
+    initMusic();
+  } else {
+    msg.style.display = 'block';
+    setTimeout(()=>msg.style.display='none', 2000);
+  }
+}
+
+/* Music Player */
+let currentMode = 'romantic';
+let isPlaying = false;
+
+const tracks = {
+  devotional: { title: 'Govinda Hari Govinda', icon: '🪔', label: 'Devotional', ytId: 'ytDevotional' },
+  romantic:   { title: 'Tum Hi Ho', icon: '❤️', label: 'Romantic', ytId: 'ytRomantic' }
+};
+
+function initMusic(){
+  document.getElementById('musicPlayer').style.display = 'flex';
+  setTimeout(()=>{ startPlay(); }, 800);
+}
+
+function startPlay(){
+  isPlaying = true;
+  updatePlayerUI();
+  getAudio(currentMode).play().catch(()=>{});
+}
+
+function togglePlay(){
+  const audio = getAudio(currentMode);
+  if(isPlaying){
+    isPlaying = false;
+    audio.pause();
+  } else {
+    isPlaying = true;
+    audio.play().catch(()=>{});
+  }
+  updatePlayerUI();
+}
+
+function switchMode(mode){
+  if(mode === currentMode) return;
+  getAudio(currentMode).pause();
+  currentMode = mode;
+  if(isPlaying){
+    const a = getAudio(currentMode);
+    a.currentTime = 0;
+    a.play().catch(()=>{});
+  }
+  updatePlayerUI();
+}
+
+function getAudio(mode){
+  return document.getElementById(mode === 'devotional' ? 'audioDevotional' : 'audioRomantic');
+}
+
+function sendYT(){}
+
+function updatePlayerUI(){
+  const t = tracks[currentMode];
+  document.getElementById('musicTitle').textContent = t.title;
+  document.getElementById('musicArt').textContent = t.icon;
+  document.getElementById('modePill').textContent = t.label;
+  document.getElementById('playPauseBtn').textContent = isPlaying ? '⏸' : '▶';
+  document.getElementById('musicArt').classList.toggle('playing', isPlaying);
+  document.getElementById('musicBar').classList.toggle('playing', isPlaying);
+  document.getElementById('btnDevotional').classList.toggle('active', currentMode==='devotional');
+  document.getElementById('btnRomantic').classList.toggle('active', currentMode==='romantic');
+}
+
+/* Gallery */
+const galleryPhotos = [
+  { src: 'p.jpeg', caption: 'Tirumala Temple 🏯' },
+  { src: 'p4.png', caption: 'Sacred Temple Gopuram ✨' },
+  { src: 'p5.jpg', caption: 'South India Temple 🌸' },
+  { src: 'p6.png', caption: 'Temple Lamps 🪔' },
+  { src: 'p7.png', caption: 'Sacred Hills ⛰️' },
+  { src: 'p8.png', caption: 'Holy River 💧' },
+  { src: 'p10.png', caption: 'Flowers & Devotion 🌺' },
+  { src: 'p11.png', caption: 'Divine Sunrise ☀️' },
+];
+function initGallery(){
+  const g = document.getElementById('gallery');
+  galleryPhotos.forEach(({src, caption}, i) => {
+    const d = document.createElement('div');
+    d.className = 'gallery-item';
+    d.innerHTML = `<img src="${src}" alt="${caption}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1621436488619-570998c9db67?w=500'">
+                   <div class="overlay">${caption}</div>`;
+    d.onclick = () => openLightbox(src);
+    g.appendChild(d);
+  });
+}
+function openLightbox(src){
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+/* Countdown */
+function startCountdown(){
+  const target = new Date('2026-05-15T00:00:00').getTime();
+  function update(){
+    const now = Date.now();
+    const diff = target - now;
+    if(diff <= 0){
+      ['days','hours','mins','secs'].forEach(id => document.getElementById('cd-'+id).textContent = '00');
+      return;
+    }
+    const d = Math.floor(diff/(1000*60*60*24));
+    const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const m = Math.floor((diff%(1000*60*60))/(1000*60));
+    const s = Math.floor((diff%(1000*60))/1000);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  }
+  update(); setInterval(update, 1000);
+}
+
+/* Scroll reveal */
+function initScrollObserver(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // Nav dots
+  const sections = document.querySelectorAll('[data-section]');
+  const dotObs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const idx = e.target.dataset.section;
+        document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i==idx));
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s=>dotObs.observe(s));
+}
+
+function scrollToSection(i){
+  const s = document.querySelectorAll('[data-section]')[i];
+  if(s) s.scrollIntoView({behavior:'smooth'});
+}
+
+/* Surprise */
+function revealSurprise(){
+  document.getElementById('surpriseReveal').classList.add('show');
+  document.querySelector('.surprise-btn').style.display = 'none';
+}
+</script>
+</body>
+</html>
